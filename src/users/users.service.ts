@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import * as bcrypt from 'bcryptjs';
+import { LoginDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -24,8 +25,16 @@ export class UsersService {
     });
   }
 
-  async createUser(username: string, password: string): Promise<User> {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    return this.userModel.create({ username, password: hashedPassword });
+  async createUser(loginDto: LoginDto): Promise<User> {
+    try {
+      const hashedPassword = await bcrypt.hash(loginDto.password, 10);
+      const createUser = {
+        username: loginDto.username,
+        password: hashedPassword,
+      };
+      return this.userModel.create(createUser);
+    } catch (error) {
+      return error;
+    }
   }
 }

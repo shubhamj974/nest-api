@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { LoginDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
+import { jwtConstants } from './constant';
 
 @Injectable()
 export class AuthService {
@@ -25,10 +26,20 @@ export class AuthService {
     if (!user) {
       throw new Error('Invalid credentials');
     }
-
     const payload = { username: user.username, sub: user.id };
-    return {
+    return await {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async validateToken(token: string): Promise<boolean> {
+    try {
+      const payload = this.jwtService.verify(token, {
+        secret: jwtConstants.secret,
+      });
+      return !!payload;
+    } catch (error) {
+      return false;
+    }
   }
 }
