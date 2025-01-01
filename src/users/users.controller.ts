@@ -38,6 +38,28 @@ export class UsersController {
     return res;
   }
 
+  @Post('email-exist')
+  async isEmailExist(@Body() username: any) {
+    console.log('username', username);
+    let res = new ResponseData();
+    if (!username) {
+      console.log('Invalid Username');
+    }
+    try {
+      const existingUser = await this.usersService.findOneByUsername(
+        username.email,
+      );
+      console.log(existingUser);
+
+      res.data = existingUser;
+    } catch (error) {
+      console.log(error);
+      res.status = false;
+      res.msg = 'something went wrong!';
+    }
+    return res;
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<User[]> {

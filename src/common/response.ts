@@ -10,9 +10,13 @@ export class ResponseData {
   @ApiProperty({ type: String, default: '' })
   public msg: String = '';
 
+  @ApiProperty({})
+  public statusCode: any = '';
+
   reset(): void {
     this.status = true;
     this.msg = '';
     this.data = {};
+    this.statusCode = '';
   }
 }
