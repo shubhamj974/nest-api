@@ -11,14 +11,13 @@ import { SequelizeModule } from '@nestjs/sequelize';
       name: 'shubham',
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        const dbConfig = new ConfigService();
         return {
           dialect: 'mysql',
-          host: dbConfig.get<string>('DATABASE_HOST'),
-          port: dbConfig.get<number>('DATABASE_PROT'),
-          username: dbConfig.get<string>('DATABASE_USER'),
-          password: dbConfig.get<string>('DATABASE_PASSWORD'),
-          database: dbConfig.get<string>('DATABASE_NAME'),
+          host: configService.get<string>('DATABASE_HOST'),
+          port: configService.get<number>('DATABASE_PORT'), // Fixed typo
+          username: configService.get<string>('DATABASE_USER'),
+          password: configService.get<string>('DATABASE_PASSWORD'),
+          database: configService.get<string>('DATABASE_NAME'),
           define: {
             underscored: false,
           },
@@ -37,6 +36,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
           synchronize: false,
         };
       },
+      inject: [ConfigService], // Inject ConfigService properly
     }),
   ],
   providers: [],
